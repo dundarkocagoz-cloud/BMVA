@@ -1,1 +1,389 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketbol Maçları Video Arşivi</title>
+    <style>
+        :root {
+            --primary: #245D63;
+            --primary-hover: #2e757d;
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --badge-bg: rgba(36, 93, 99, 0.25);
+            --badge-text: #5eead4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h1 span.dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .stats {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 260px;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--badge-text);
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cat-btn {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .cat-btn:hover {
+            color: var(--text-main);
+            border-color: var(--primary-hover);
+        }
+
+        .cat-btn.active {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-hover);
+        }
+
+        .thumb-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Oranı */
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .thumb-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 0.75rem;
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .channel {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-decoration: none;
+            display: -webkit-box;
+            /* webkit-line-clamp: 2; */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .title:hover {
+            color: var(--badge-text);
+        }
+
+        .note {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .watch-btn {
+            margin-top: 0.5rem;
+            display: inline-block;
+            text-align: center;
+            padding: 0.65rem;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .watch-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-top">
+            <h1><span class="dot"></span> Basketbol Maçları Video Arşivi</h1>
+            <div class="stats" id="videoCount">Toplam: 0 Video</div>
+        </div>
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Video başlığı, kanal adı veya notlarda ara...">
+            <div class="categories" id="categoryContainer">
+                <button class="cat-btn active" data-cat="Tümü">Tümü</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="grid" id="videoGrid"></main>
+</div>
+
+<script>
+    // =========================================================================
+    // VİDEO VERİ LİSTESİ (Yeni video eklemek için buraya yeni obje ekleyin)
+    // "id": YouTube linkindeki v= sonrası kısım (Örn: watch?v=dQw4w9WgXcQ -> id: "dQw4w9WgXcQ")
+    // =========================================================================
+    const videos = [
+        {
+            id: "6lKdFpvIA7E",
+            title: "TED KOLEJİ (A)- DSİ",
+            channel: "Sporda Röportaj",
+            category: "U11 KIZ (2025 - 2026)",
+            note: "1.KÜME 1.MAÇ - 17 Ocak 2026",
+            link:"https://youtu.be/6lKdFpvIA7E?si=fC3VXGZQoWt-xBjt",
+        },
+        {
+            id: "0LXQGl_ixLY",
+            title: "DSİ - ÇANKAYA ÜNİVERSİTESİ",
+            channel: "Ankara DSİ Spor Basketbol",
+            category: "U11 KIZ (2025 - 2026)",
+            note: "4 Şubat 2026",
+            link:"https://youtu.be/0LXQGl_ixLY",
+        },
+        {
+            id: "QA_Hw7SlfHo",
+            title: "DSİ - CAS AKADEMİ",
+            channel: "Ankara DSİ Spor Basketbol",
+            category: "U11 KIZ (2025 - 2026)",
+            note: "13 Şubat 2026",
+            link:"https://youtu.be/QA_Hw7SlfHo?si=ofFoFLN7b81Tt3do",
+        },
+        {
+            id: "sSiaz72eHOM",
+            title: "DSİ - OGM ORMANSPOR",
+            channel: "Sporda Röportaj",
+            category: "U11 KIZ (2025 - 2026)",
+            note: "28 Oca 2026",
+            link:"https://youtu.be/sSiaz72eHOM?si=eLPCrKZLeLhHJrB_",
+        }
+    ];
+
+    let activeCategory = "Tümü";
+    let searchQuery = "";
+
+    const grid = document.getElementById("videoGrid");
+    const categoryContainer = document.getElementById("categoryContainer");
+    const searchInput = document.getElementById("searchInput");
+    const videoCount = document.getElementById("videoCount");
+
+    // Kategorileri dinamik olarak oluştur
+    function initCategories() {
+        const categories = ["Tümü", ...new Set(videos.map(v => v.category))];
+        categoryContainer.innerHTML = categories.map(cat => `
+            <button class="cat-btn ${cat === activeCategory ? 'active' : ''}" data-cat="${cat}">
+                ${cat}
+            </button>
+        `).join("");
+
+        document.querySelectorAll(".cat-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                activeCategory = e.target.dataset.cat;
+                document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+                e.target.classList.add("active");
+                renderVideos();
+            });
+        });
+    }
+
+    // Videoları ekrana bas
+    function renderVideos() {
+        const filtered = videos.filter(video => {
+            const matchesCat = activeCategory === "Tümü" || video.category === activeCategory;
+            const query = searchQuery.toLowerCase();
+            const matchesSearch = 
+                video.title.toLowerCase().includes(query) ||
+                video.channel.toLowerCase().includes(query) ||
+                video.note.toLowerCase().includes(query);
+            return matchesCat && matchesSearch;
+        });
+
+        videoCount.textContent = `Gösterilen: ${filtered.length} / ${videos.length} Video`;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div class="empty-state">Arama kriterlerinize uygun video bulunamadı.</div>`;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(video => {
+            const url = `https://www.youtube.com/watch?v=${video.id}`;
+            const thumb = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+            return `
+                <article class="card">
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" class="thumb-wrapper">
+                        <img src="${thumb}" alt="${video.title}" loading="lazy">
+                    </a>
+                    <div class="card-body">
+                        <div class="meta">
+                            <span class="badge">${video.category}</span>
+                            <span class="channel">${video.channel}</span>
+                        </div>
+                        <a href="${url}" target="_blank" rel="noopener noreferrer" class="title">${video.title}</a>
+                        <p class="note">${video.note}</p>
+                        <a href="${url}" target="_blank" rel="noopener noreferrer" class="watch-btn">İzle</a>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    }
+
+    searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        renderVideos();
+    });
+
+    // Başlangıç yüklemesi
+    initCategories();
+    renderVideos();
+</script>
+
+</body>
+</html>
